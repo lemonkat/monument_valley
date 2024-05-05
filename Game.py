@@ -4,44 +4,36 @@ from utils import sum_lists, ndrange
 
 from Structures import Coord, Block, Ladder, Button, Door
 
+
 @dataclass
 class Grid:
-	size:int
-	blocks:list[Block] = field(default_factory = list)
-	doors:list[Door] = field(default_factory = list)
-	ladders:list[Ladder] = field(default_factory = list)
+    size: int
+    blocks: list[Block] = field(default_factory=list)
+    doors: list[Door] = field(default_factory=list)
+    ladders: list[Ladder] = field(default_factory=list)
 
-	def as_lst(self):
-		return functools.reduce(
-			sum_lists, 
-			(
-				block.as_lst() 
-				for block in self.blocks
-			), 
-			[
-				[
-					[
-						0 
-						for x in range(self.size)
-					] 
-					for j in range(self.size)
-				] 
-				for k in range(self.size)
-			]
-		)
+    def as_lst(self):
+        return functools.reduce(
+            sum_lists,
+            (block.as_lst() for block in self.blocks),
+            [
+                [[0 for x in range(self.size)] for j in range(self.size)]
+                for k in range(self.size)
+            ],
+        )
 
-	def print(self):
-		lst = self.as_lst()
-		for layer in range(self.size):
-			print("Layer " + str(layer) + ": ")
-			print("\n".join("".join((str(item) for item in row)) for row in lst[layer]))
+    def print(self):
+        lst = self.as_lst()
+        for layer in range(self.size):
+            print("Layer " + str(layer) + ": ")
+            print("\n".join("".join((str(item) for item in row)) for row in lst[layer]))
 
-	def add(self, lower, upper, weight):
-		self.blocks.append(Block(lower, upper, self, weight))
+    def add(self, lower, upper, weight):
+        self.blocks.append(Block(lower, upper, self, weight))
 
+    def get(self, crd: Coord) -> int:
+        return sum([block.contains(crd) for block in self.blocks])
 
-	def get(self, crd: Coord) -> int:
-		return sum([block.contains(crd) for block in self.blocks])
 
 # @dataclass
 # class Player:
@@ -82,7 +74,3 @@ class Grid:
 # 		for door in self.grd.doors:
 # 			if door.crd == crd:
 # 				pass
-
-		
-
-
